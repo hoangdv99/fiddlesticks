@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"expvar"
 	"flag"
+	"fmt"
 	"os"
 	"runtime"
 	"sync"
@@ -16,7 +17,8 @@ import (
 	"greenlight.hoangdv99/internal/mailer"
 )
 
-const version = "1.0.0"
+var version string
+var buildTime string
 
 type config struct {
 	port int
@@ -70,7 +72,15 @@ func main() {
 	flag.StringVar(&cfg.smtp.password, "smtp-password", "dc855c95842e97", "SMTP password")
 	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "Greenlight <no-reply@greenlight.hoangdv99>", "SMTP sender")
 
+	displayVersion := flag.Bool("version", false, "Display version and exit")
+
 	flag.Parse()
+
+	if *displayVersion {
+		fmt.Printf("Version:\t%s\n", version)
+		fmt.Printf("Build time:\t%s\n", buildTime)
+		os.Exit(0)
+	}
 
 	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 
